@@ -15,8 +15,8 @@ Auto change power usage of cpu
     + Pull source code
     + Changing your config at auto.sh
     + Testing it by using command "bash auto.sh"
-    + Hard word for about 30min for checking stable state
-    + When it stable run "bash install.sh" to installation at boot
+    + Hard work for about 30min for checking stable state
+    + When it stable run "bash install.sh" to make it run at boot
     + Using "bash uninstall.sh" to remove it
 
 # Thanks
