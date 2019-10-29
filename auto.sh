@@ -11,10 +11,10 @@ else
     BIN_LOCATION="./voltageshift"
     DEBUG="true"
 fi
-mkdir -p /tmp/smartcpu
-echo "init" >"/tmp/smartcpu/profile_name"
-echo "-1" >"/tmp/smartcpu/profile"
-echo "0 0 0" >"/tmp/smartcpu/config"
+mkdir -p /Users/Shared/.smartcpu
+echo "init" >"/Users/Shared/.smartcpu/profile_name"
+echo "-1" >"/Users/Shared/.smartcpu/profile"
+echo "0 0 0" >"/Users/Shared/.smartcpu/config"
 declare -i TIME_INTERVAL_TRACK=2 # Time will check battery status again
 MAX_TICK_SET_VOLT_AGAIN=900      # About 30min = 900*2 second
 
@@ -53,8 +53,8 @@ GPU_VOLT="-0"
 
 # Send and notification for user with input: Content and subcontent
 notification() {
-    echo "$1" >/tmp/smartcpu/notifier
-    echo "$2" >>/tmp/smartcpu/notifier
+    echo "$1" >/Users/Shared/.smartcpu/notifier
+    echo "$2" >>/Users/Shared/.smartcpu/notifier
 }
 
 get_bat_percent() {
@@ -62,11 +62,11 @@ get_bat_percent() {
 }
 
 extra_battery_mode() {
-    echo "Extra Battery" >"/tmp/smartcpu/profile_name"
-    echo "0" >"/tmp/smartcpu/profile"
-    echo "$EX_BATTERY_LONG" >"/tmp/smartcpu/config"
-    echo "$EX_BATTERY_SHORT" >>"/tmp/smartcpu/config"
-    echo "$EX_BATTERY_TURBO" >>"/tmp/smartcpu/config"
+    echo "Extra Battery" >"/Users/Shared/.smartcpu/profile_name"
+    echo "0" >"/Users/Shared/.smartcpu/profile"
+    echo "$EX_BATTERY_LONG" >"/Users/Shared/.smartcpu/config"
+    echo "$EX_BATTERY_SHORT" >>"/Users/Shared/.smartcpu/config"
+    echo "$EX_BATTERY_TURBO" >>"/Users/Shared/.smartcpu/config"
     echo ">> Switching to Extra Battery Mode"
     notification "Enter extra battery mode!" "Web browsing, web developer, low usage of cpu."
     TEMP="$(eval $BIN_LOCATION power $EX_BATTERY_LONG $EX_BATTERY_SHORT)"
@@ -74,11 +74,11 @@ extra_battery_mode() {
 }
 
 battery_mode() {
-    echo "Battery" >"/tmp/smartcpu/profile_name"
-    echo "1" >"/tmp/smartcpu/profile"
-    echo "$BATTERY_LONG" >"/tmp/smartcpu/config"
-    echo "$BATTERY_SHORT" >>"/tmp/smartcpu/config"
-    echo "$BATTERY_TURBO" >>"/tmp/smartcpu/config"
+    echo "Battery" >"/Users/Shared/.smartcpu/profile_name"
+    echo "1" >"/Users/Shared/.smartcpu/profile"
+    echo "$BATTERY_LONG" >"/Users/Shared/.smartcpu/config"
+    echo "$BATTERY_SHORT" >>"/Users/Shared/.smartcpu/config"
+    echo "$BATTERY_TURBO" >>"/Users/Shared/.smartcpu/config"
     echo ">> Switching to Battery Mode"
     notification "Enter battery mode!" "Low cpu power for better usage time, light coding."
     TEMP="$(eval $BIN_LOCATION power $BATTERY_LONG $BATTERY_SHORT)"
@@ -86,11 +86,11 @@ battery_mode() {
 }
 
 normal_mode() {
-    echo "Normal" >"/tmp/smartcpu/profile_name"
-    echo "2" >"/tmp/smartcpu/profile"
-    echo "$NORMAL_LONG" >"/tmp/smartcpu/config"
-    echo "$NORMAL_SHORT" >>"/tmp/smartcpu/config"
-    echo "$NORMAL_TURBO" >>"/tmp/smartcpu/config"
+    echo "Normal" >"/Users/Shared/.smartcpu/profile_name"
+    echo "2" >"/Users/Shared/.smartcpu/profile"
+    echo "$NORMAL_LONG" >"/Users/Shared/.smartcpu/config"
+    echo "$NORMAL_SHORT" >>"/Users/Shared/.smartcpu/config"
+    echo "$NORMAL_TURBO" >>"/Users/Shared/.smartcpu/config"
     echo ">> Switching to Normal Mode"
     notification "Enter normal mode!" "Normal cpu power for daily usage, daily task."
     TEMP="$(eval $BIN_LOCATION power $NORMAL_LONG $NORMAL_SHORT)"
@@ -98,11 +98,11 @@ normal_mode() {
 }
 
 performance_mode() {
-    echo "Performance" >"/tmp/smartcpu/profile_name"
-    echo "3" >"/tmp/smartcpu/profile"
-    echo "$PERFORMANCE_LONG" >"/tmp/smartcpu/config"
-    echo "$PERFORMANCE_SHORT" >>"/tmp/smartcpu/config"
-    echo "$PERFORMANCE_TURBO" >>"/tmp/smartcpu/config"
+    echo "Performance" >"/Users/Shared/.smartcpu/profile_name"
+    echo "3" >"/Users/Shared/.smartcpu/profile"
+    echo "$PERFORMANCE_LONG" >"/Users/Shared/.smartcpu/config"
+    echo "$PERFORMANCE_SHORT" >>"/Users/Shared/.smartcpu/config"
+    echo "$PERFORMANCE_TURBO" >>"/Users/Shared/.smartcpu/config"
     echo ">> Switching to Performance Mode"
     notification "Enter performane mode!" "High cpu power, medium task without too hot."
     TEMP="$(eval $BIN_LOCATION power $PERFORMANCE_LONG $PERFORMANCE_SHORT)"
@@ -110,11 +110,11 @@ performance_mode() {
 }
 
 extra_performance_mode() {
-    echo "Extra Performance" >"/tmp/smartcpu/profile_name"
-    echo "4" >"/tmp/smartcpu/profile"
-    echo "$EX_PERFORMANCE_LONG" >"/tmp/smartcpu/config"
-    echo "$EX_PERFORMANCE_SHORT" >>"/tmp/smartcpu/config"
-    echo "$EX_PERFORMANCE_TURBO" >>"/tmp/smartcpu/config"
+    echo "Extra Performance" >"/Users/Shared/.smartcpu/profile_name"
+    echo "4" >"/Users/Shared/.smartcpu/profile"
+    echo "$EX_PERFORMANCE_LONG" >"/Users/Shared/.smartcpu/config"
+    echo "$EX_PERFORMANCE_SHORT" >>"/Users/Shared/.smartcpu/config"
+    echo "$EX_PERFORMANCE_TURBO" >>"/Users/Shared/.smartcpu/config"
     echo ">> Switching to Extra Performance Mode"
     notification "Enter extra performane mode!" "Hardcore task, building apps, maxout your cpu."
     TEMP="$(eval $BIN_LOCATION power $EX_PERFORMANCE_LONG $EX_PERFORMANCE_SHORT)"
@@ -194,7 +194,7 @@ while true; do
             select_profile
         fi
     fi
-    TEMP_PROFILE="$(cat /tmp/smartcpu/profile)"
+    TEMP_PROFILE="$(cat /Users/Shared/.smartcpu/profile)"
     if [ $PROFILE != $TEMP_PROFILE ]; then
         PROFILE=$TEMP_PROFILE
         select_profile

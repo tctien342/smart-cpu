@@ -14,13 +14,13 @@ def get_now_run(pos):
         return ">"
 
 # Getting profile position
-with open("/tmp/smartcpu/profile", "r") as input:
+with open("/Users/Shared/.smartcpu/profile", "r") as input:
     lines = input.readlines()
     for line in lines:
         profile = line
 
 # Getting current config
-with open("/tmp/smartcpu/config", "r") as input:
+with open("/Users/Shared/.smartcpu/config", "r") as input:
     lines = input.readlines()
     for line in lines:
         config.append(line)

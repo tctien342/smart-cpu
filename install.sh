@@ -9,7 +9,7 @@ TMP="$(launchctl unload -w ~/Library/LaunchAgents/com.saintno.notifier.plist &>/
 sudo rm -f ~/Library/LaunchAgents/com.saintno.autovoltage.plist
 sudo rm -f ~/Library/LaunchAgents/com.saintno.notifier.plist
 sudo rm -r -f /Library/Application\ Support/VoltageShift
-sudo rm -r -f /tmp/smartcpu
+sudo rm -r -f /Users/Shared/.smartcpu
 
 #Warning
 echo "<> This script may cause panic, dead cpu due to your config."
@@ -22,11 +22,11 @@ read -p "<> Press any key to continute, Ctrl + C to cancel..."
 
 #Install
 echo "<> Installing..."
-mkdir -p /tmp/smartcpu
-echo "" >/tmp/smartcpu/notifier
-echo "" >/tmp/smartcpu/profile
-echo "" >/tmp/smartcpu/config
-echo "" >/tmp/smartcpu/profile_name
+mkdir -p /Users/Shared/.smartcpu
+echo "" >/Users/Shared/.smartcpu/notifier
+echo "" >/Users/Shared/.smartcpu/profile
+echo "" >/Users/Shared/.smartcpu/config
+echo "" >/Users/Shared/.smartcpu/profile_name
 sudo cp ./com.saintno.autovoltage.plist ~/Library/LaunchAgents/
 sudo cp ./com.saintno.notifier.plist ~/Library/LaunchAgents/
 sudo chown root:wheel ~/Library/LaunchAgents/com.saintno.autovoltage.plist

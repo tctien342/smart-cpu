@@ -1,6 +1,6 @@
 #!/bin/bash
 # Get profile name
-PROFILE="$(cat /tmp/smartcpu/profile)"
+PROFILE="$(cat /Users/Shared/.smartcpu/profile)"
 case $PROFILE in
 0)
     PROFILE_NAME="Extra Battery"

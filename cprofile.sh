@@ -1,4 +1,4 @@
 #! /bin/bash
-mkdir -p /tmp/smartcpu
+mkdir -p /Users/Shared/.smartcpu
 echo "<> Selecting profile..."
-echo "$1" >"/tmp/smartcpu/profile"
+echo "$1" >"/Users/Shared/.smartcpu/profile"

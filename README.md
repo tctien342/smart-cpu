@@ -4,7 +4,7 @@
 + In care your system is not stable, please run uninstall and reboot then find an better config.
 
 # Info
-    + Ver 1.5
+    + Ver 1.6
     + Init auto script for plugin and battery mode
     + This script will controll your cpu power such as:
         + Long term power
@@ -15,6 +15,9 @@
     + You can read more info at here: https://github.com/sicreative/VoltageShift
     + Add 5 profile to be selected
 # Changelog
+## Ver 1.6
+    + Fix auto load value on reboot
+    
 ## Ver 1.5
     + Fix value not applied
     + Add more profile

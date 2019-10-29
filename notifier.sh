@@ -1,10 +1,10 @@
 #! /bin/bash
 
-FILE_LOCATION="/tmp/smartcpu/notifier"
+FILE_LOCATION="/Users/Shared/.smartcpu/notifier"
 TIME_INTERVAL_TRACK=1
 TEMP_NOTIFI=("" "")
 IFS=$'\n'
-mkdir -p /tmp/smartcpu
+mkdir -p /Users/Shared/.smartcpu
 echo "false" >$FILE_LOCATION
 
 notification() {
@@ -18,7 +18,7 @@ while true; do
     POS=0
     if [ "$TEMP" != "false" ]; then
         echo "<> Incomming notification"
-        for i in $(</tmp/smartcpu/notifier); do
+        for i in $(</Users/Shared/.smartcpu/notifier); do
             TEMP_NOTIFI[$POS]=$i
             POS=$(($POS + 1))
         done
