@@ -27,9 +27,9 @@ echo "" >/Users/Shared/.smartcpu/notifier
 echo "" >/Users/Shared/.smartcpu/profile
 echo "" >/Users/Shared/.smartcpu/config
 echo "" >/Users/Shared/.smartcpu/profile_name
-sudo cp ./com.saintno.autovoltage.plist ~/Library/LaunchAgents/
+sudo cp ./com.saintno.autovoltage.plist /Library/LaunchDaemons/
 sudo cp ./com.saintno.notifier.plist ~/Library/LaunchAgents/
-sudo chown root:wheel ~/Library/LaunchAgents/com.saintno.autovoltage.plist
+sudo chown root:wheel /Library/LaunchDaemons/com.saintno.autovoltage.plist
 sudo chown root:wheel ~/Library/LaunchAgents/com.saintno.notifier.plist
 sudo mkdir -p /Library/Application\ Support/VoltageShift/
 sudo cp -R ./VoltageShift.kext /Library/Application\ Support/VoltageShift/
@@ -47,7 +47,7 @@ sudo chmod 777 /Library/Application\ Support/VoltageShift/voltageshift
 sudo chmod 777 /Library/Application\ Support/VoltageShift/notifier.sh
 sudo chmod 755 /usr/local/bin/cprofile
 launchctl load -w ~/Library/LaunchAgents/com.saintno.notifier.plist
-sudo launchctl load -w ~/Library/LaunchAgents/com.saintno.autovoltage.plist
+sudo launchctl load -w /Library/LaunchDaemons/com.saintno.autovoltage.plist
 echo "<> To select profile, please install https://github.com/matryer/bitbar and select plugin folder as bitbar's plugin folder"
 echo "<> In case you have installed bitbar, copy all file in plugin to bitbar's plugin folder"
 echo "<> To uninstall, please use 'bash uninstall.sh'."
