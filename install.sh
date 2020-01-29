@@ -27,6 +27,7 @@ echo "" >/Users/Shared/.smartcpu/notifier
 echo "" >/Users/Shared/.smartcpu/profile
 echo "" >/Users/Shared/.smartcpu/config
 echo "" >/Users/Shared/.smartcpu/profile_name
+chmod -R 777 /Users/Shared/.smartcpu/*
 sudo cp ./com.saintno.autovoltage.plist /Library/LaunchDaemons/
 sudo cp ./com.saintno.notifier.plist ~/Library/LaunchAgents/
 sudo chown root:wheel /Library/LaunchDaemons/com.saintno.autovoltage.plist
