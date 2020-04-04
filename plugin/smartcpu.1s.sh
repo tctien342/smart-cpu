@@ -9,7 +9,7 @@ case $PROFILE in
     PROFILE_NAME="Battery"
     ;;
 2)
-    PROFILE_NAME="Normal"
+    PROFILE_NAME="Balance"
     ;;
 3)
     PROFILE_NAME="Performance"
@@ -18,7 +18,7 @@ case $PROFILE in
     PROFILE_NAME="Extra Performance"
     ;;
 esac
-echo $PROFILE_NAME
+echo ":zap:"$PROFILE_NAME "| font=Arial"
 echo "---"
 
 # Print submenu

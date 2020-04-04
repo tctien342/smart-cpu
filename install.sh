@@ -1,7 +1,7 @@
 #! /bin/bash
 #Clean
 sudo echo "------------------------------------"
-echo "Smart CPU version 1.5"
+echo "Smart CPU version 1.6"
 echo "Script written by saintno@hackintoshvn"
 echo "Begin cleaning..."
 TMP="$(sudo launchctl unload -w ~/Library/LaunchAgents/com.saintno.autovoltage.plist &>/dev/null)"
@@ -27,6 +27,10 @@ echo "" >/Users/Shared/.smartcpu/notifier
 echo "" >/Users/Shared/.smartcpu/profile
 echo "" >/Users/Shared/.smartcpu/config
 echo "" >/Users/Shared/.smartcpu/profile_name
+echo "" >/Users/Shared/.smartcpu/battery
+echo "" >/Users/Shared/.smartcpu/setting
+echo 1 >/Users/Shared/.smartcpu/notification
+echo 1 >/Users/Shared/.smartcpu/auto_shut
 chmod -R 777 /Users/Shared/.smartcpu/*
 sudo cp ./com.saintno.autovoltage.plist /Library/LaunchDaemons/
 sudo cp ./com.saintno.notifier.plist ~/Library/LaunchAgents/

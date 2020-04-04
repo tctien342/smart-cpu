@@ -1,24 +1,5 @@
 #! /bin/bash
-
-# Default script value
-declare -i TICK=0
-declare -i PROFILE=0 # Init profile position
-MAX_PROFILE=5       # Max profile have
-if [[ -d "/Library/Application Support/VoltageShift/" ]]; then
-    BIN_LOCATION="/Library/Application\ Support/VoltageShift/voltageshift"
-    DEBUG="false"
-else
-    BIN_LOCATION="./voltageshift"
-    DEBUG="true"
-fi
-mkdir -p /Users/Shared/.smartcpu
-echo "init" >"/Users/Shared/.smartcpu/profile_name"
-echo "-1" >"/Users/Shared/.smartcpu/profile"
-echo "0 0 0" >"/Users/Shared/.smartcpu/config"
-declare -i TIME_INTERVAL_TRACK=2 # Time will check battery status again
-MAX_TICK_SET_VOLT_AGAIN=900      # About 30min = 900*2 second
-
-# Init your config here
+######### BEGIN OF YOUR CONFIG ######### 
 # All W value should be below your CPU TPD, you can not overclock cpu with this value
 # Find your value in intel page like this
 # 9300H: https://www.intel.vn/content/www/vn/vi/products/processors/core/i5-processors/i5-9300h.html
@@ -26,11 +7,11 @@ MAX_TICK_SET_VOLT_AGAIN=900      # About 30min = 900*2 second
 # EXTRA BATTERY PROFILE 0               <EXTRA LOW BATTERY USAGE>
 EX_BATTERY_LONG="0"   # Long period power usage of cpu W
 EX_BATTERY_SHORT="0" # Short period power usage of cpu W
-EX_BATTERY_TURBO="0"  # Intel turbo on/off <Off>
+EX_BATTERY_TURBO="1"  # Intel turbo on/off <Off>
 # BATTERY USAGE PROFILE 1               <LOW BATTARY USAGE AND COOL>
 BATTERY_LONG="0"  # Long period power usage of cpu W
 BATTERY_SHORT="0" # Short period power usage of cpu W
-BATTERY_TURBO="0"  # Intel turbo on/off <Off>
+BATTERY_TURBO="1"  # Intel turbo on/off <Off>
 # NORMAL USAGE PROFILE 2                <SMOOTHEST AND COOL>
 NORMAL_LONG="0"
 NORMAL_SHORT="0"
@@ -43,31 +24,75 @@ PERFORMANCE_TURBO="1"
 EX_PERFORMANCE_LONG="0"
 EX_PERFORMANCE_SHORT="0"
 EX_PERFORMANCE_TURBO="1"
+# SETTING AUTO PROFILE ON BATTERY LOW
+BATTERY_LOW_PERCENT=20 # Setting percent when battery is low
+BATTERY_LOW_PROFILES=0 # When battery low will setting this profile
 # SETTING INIT PROFILE
 BATTERY_PROFILE=1 # On battery will select this profile
-PLUGIN_PROFILE=4  # On plugin will select this profile
+PLUGIN_PROFILE=3  # On plugin will select this profile
+# UNDERVOLT
 # Setting to undervolt CPU -> Colddown (mha)
-# Config and this this carefully ( set to 0 if you want to bypass )
-CPU_VOLT="-0"
-GPU_VOLT="-0"
+# Config this must carefully, can damage your cpu ( set to 0 if you want to bypass )
+# EX: C -125 G -90
+CPU_VOLT="0"
+GPU_VOLT="0"
+
+######### END OF CONFIG ######### 
+
+######### PROGRAM START #########
+# Default script value
+declare -i TICK=0
+declare -i PROFILE=0 # Init profile position
+declare -i LOW_TICK=0 # Tick before shutdown the computer
+declare -i ALERT_PERCENT=5 # Battery percent before shut down system
+MAX_PROFILE=5       # Max profile have
+if [[ -d "/Library/Application Support/VoltageShift/" ]]; then
+    BIN_LOCATION="/Library/Application\ Support/VoltageShift/voltageshift"
+    DEBUG="false"
+else
+    BIN_LOCATION="./voltageshift"
+    DEBUG="true"
+fi
+mkdir -p /Users/Shared/.smartcpu
+echo "init" >"/Users/Shared/.smartcpu/profile_name"
+echo "-1" >"/Users/Shared/.smartcpu/profile"
+echo "0 0 0" >"/Users/Shared/.smartcpu/config"
+echo "" >"/Users/Shared/.smartcpu/setting"
+declare -i TIME_INTERVAL_TRACK=2 # Time will check battery status again
+MAX_TICK_SET_VOLT_AGAIN=900      # About 30min = 900*2 second
+MAX_TICK_SHUTDOWN=30             # About 1min = 30*2 second
 
 # Send and notification for user with input: Content and subcontent
 notification() {
+    NOTIFI="$(cat /Users/Shared/.smartcpu/notification)"
+    if [ "$NOTIFI" -eq 1 ]; then
+        echo "$1" >/Users/Shared/.smartcpu/notifier
+        echo "$2" >>/Users/Shared/.smartcpu/notifier
+    fi
+}
+# Force using notfication, emergency alert
+notification_force() {
     echo "$1" >/Users/Shared/.smartcpu/notifier
     echo "$2" >>/Users/Shared/.smartcpu/notifier
 }
-
+# Get current battery percent
 get_bat_percent() {
     echo "$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
 }
 
+# Shutdown your system
+shut_down(){
+    TEMP="$(osascript -e 'tell app "System Events" to shut down')"
+}
+
+# Init all profile setting
 extra_battery_mode() {
     echo "Extra Battery" >"/Users/Shared/.smartcpu/profile_name"
     echo "0" >"/Users/Shared/.smartcpu/profile"
     echo "$EX_BATTERY_LONG" >"/Users/Shared/.smartcpu/config"
     echo "$EX_BATTERY_SHORT" >>"/Users/Shared/.smartcpu/config"
     echo "$EX_BATTERY_TURBO" >>"/Users/Shared/.smartcpu/config"
-    echo ">> Switching to Extra Battery Mode"
+    echo "<p> Switching to Extra Battery Mode"
     notification "Enter extra battery mode!" "Web browsing, web developer, low usage of cpu."
     TEMP="$(eval $BIN_LOCATION power $EX_BATTERY_LONG $EX_BATTERY_SHORT)"
     TEMP="$(eval $BIN_LOCATION turbo $EX_BATTERY_TURBO)"
@@ -79,7 +104,7 @@ battery_mode() {
     echo "$BATTERY_LONG" >"/Users/Shared/.smartcpu/config"
     echo "$BATTERY_SHORT" >>"/Users/Shared/.smartcpu/config"
     echo "$BATTERY_TURBO" >>"/Users/Shared/.smartcpu/config"
-    echo ">> Switching to Battery Mode"
+    echo "<p> Switching to Battery Mode"
     notification "Enter battery mode!" "Low cpu power for better usage time, light coding."
     TEMP="$(eval $BIN_LOCATION power $BATTERY_LONG $BATTERY_SHORT)"
     TEMP="$(eval $BIN_LOCATION turbo $BATTERY_TURBO)"
@@ -91,7 +116,7 @@ normal_mode() {
     echo "$NORMAL_LONG" >"/Users/Shared/.smartcpu/config"
     echo "$NORMAL_SHORT" >>"/Users/Shared/.smartcpu/config"
     echo "$NORMAL_TURBO" >>"/Users/Shared/.smartcpu/config"
-    echo ">> Switching to Normal Mode"
+    echo "<p> Switching to Normal Mode"
     notification "Enter normal mode!" "Normal cpu power for daily usage, daily task."
     TEMP="$(eval $BIN_LOCATION power $NORMAL_LONG $NORMAL_SHORT)"
     TEMP="$(eval $BIN_LOCATION turbo $NORMAL_TURBO)"
@@ -103,7 +128,7 @@ performance_mode() {
     echo "$PERFORMANCE_LONG" >"/Users/Shared/.smartcpu/config"
     echo "$PERFORMANCE_SHORT" >>"/Users/Shared/.smartcpu/config"
     echo "$PERFORMANCE_TURBO" >>"/Users/Shared/.smartcpu/config"
-    echo ">> Switching to Performance Mode"
+    echo "<p> Switching to Performance Mode"
     notification "Enter performane mode!" "High cpu power, medium task without too hot."
     TEMP="$(eval $BIN_LOCATION power $PERFORMANCE_LONG $PERFORMANCE_SHORT)"
     TEMP="$(eval $BIN_LOCATION turbo $PERFORMANCE_TURBO)"
@@ -115,12 +140,22 @@ extra_performance_mode() {
     echo "$EX_PERFORMANCE_LONG" >"/Users/Shared/.smartcpu/config"
     echo "$EX_PERFORMANCE_SHORT" >>"/Users/Shared/.smartcpu/config"
     echo "$EX_PERFORMANCE_TURBO" >>"/Users/Shared/.smartcpu/config"
-    echo ">> Switching to Extra Performance Mode"
+    echo "<p> Switching to Extra Performance Mode"
     notification "Enter extra performane mode!" "Hardcore task, building apps, maxout your cpu."
     TEMP="$(eval $BIN_LOCATION power $EX_PERFORMANCE_LONG $EX_PERFORMANCE_SHORT)"
     TEMP="$(eval $BIN_LOCATION turbo $EX_PERFORMANCE_TURBO)"
 }
 
+# Add value to file on start for birbar plugin read
+init_value_to_file(){
+    echo "$EX_BATTERY_SHORT $EX_BATTERY_LONG $EX_BATTERY_TURBO" >"/Users/Shared/.smartcpu/setting"
+    echo "$BATTERY_SHORT $BATTERY_LONG $BATTERY_TURBO" >>"/Users/Shared/.smartcpu/setting"
+    echo "$NORMAL_SHORT $NORMAL_LONG $NORMAL_TURBO" >>"/Users/Shared/.smartcpu/setting"
+    echo "$PERFORMANCE_SHORT $PERFORMANCE_LONG $PERFORMANCE_TURBO" >>"/Users/Shared/.smartcpu/setting"
+    echo "$EX_PERFORMANCE_SHORT $EX_PERFORMANCE_LONG $EX_PERFORMANCE_TURBO" >>"/Users/Shared/.smartcpu/setting"
+}
+
+# Switch profile function
 select_profile() {
     case $PROFILE in
     0)
@@ -145,27 +180,30 @@ select_profile() {
 }
 
 # Init stage
+init_value_to_file
 TEMP="$(eval $BIN_LOCATION offset $CPU_VOLT $GPU_VOLT $CPU_VOLT)"
-echo "<> Created by saintno"
+echo "<a> Created by saintno"
 if [ $DEBUG == "true" ]; then
-    echo "<> Console mode"
+    echo "<m> Console mode"
 else
-    echo "<> Installed mode"
+    echo "<m> Installed mode"
 fi
-echo "<> Init config"
-echo "  >> EXTRA BATTERY MODE: L$EX_BATTERY_LONG S$EX_BATTERY_SHORT TURBO $EX_BATTERY_TURBO"
-echo "  >> BATTERY MODE: L$BATTERY_LONG S$BATTERY_SHORT TURBO $BATTERY_TURBO"
-echo "  >> NORMAL MODE: L$NORMAL_LONG S$NORMAL_SHORT TURBO $NORMAL_TURBO"
-echo "  >> PERFORMANCE MODE: L$PERFORMANCE_LONG S$PERFORMANCE_SHORT TURBO $PERFORMANCE_TURBO"
-echo "  >> EXTRA PERFORMANCE MODE: L$EX_PERFORMANCE_LONG S$EX_PERFORMANCE_SHORT TURBO $EX_PERFORMANCE_TURBO"
-echo "  >> VOLTAGE OFFSET: CPU $CPU_VOLT mha & GPU $GPU_VOLT mha"
+echo "<m> Init config"
+echo "  <i> EXTRA BATTERY MODE: L$EX_BATTERY_LONG S$EX_BATTERY_SHORT TURBO $EX_BATTERY_TURBO"
+echo "  <i> BATTERY MODE: L$BATTERY_LONG S$BATTERY_SHORT TURBO $BATTERY_TURBO"
+echo "  <i> NORMAL MODE: L$NORMAL_LONG S$NORMAL_SHORT TURBO $NORMAL_TURBO"
+echo "  <i> PERFORMANCE MODE: L$PERFORMANCE_LONG S$PERFORMANCE_SHORT TURBO $PERFORMANCE_TURBO"
+echo "  <i> EXTRA PERFORMANCE MODE: L$EX_PERFORMANCE_LONG S$EX_PERFORMANCE_SHORT TURBO $EX_PERFORMANCE_TURBO"
+echo "  <i> VOLTAGE OFFSET: CPU $CPU_VOLT mha & GPU $GPU_VOLT mha"
 BATTERY_STATUS="$(pmset -g batt | grep 'Battery Power')"
 if [[ $BATTERY_STATUS == *"Battery Power"* ]]; then
     PLUG_IN="false"
+    echo "true" >"/Users/Shared/.smartcpu/battery"
     PROFILE=BATTERY_PROFILE
     select_profile
 else
     PLUG_IN="true"
+    echo "false" >"/Users/Shared/.smartcpu/battery"
     PROFILE=PLUGIN_PROFILE
     select_profile
 fi
@@ -174,6 +212,8 @@ fi
 while true; do
     TICK=$((TICK + 1))
     BATTERY_STATUS="$(pmset -g batt | grep 'Battery Power')"
+    BATTERY_LEVEL=$(get_bat_percent)
+    AUTO_SHUT="$(cat /Users/Shared/.smartcpu/auto_shut)"
 
     if [ $TICK == $MAX_TICK_SET_VOLT_AGAIN ]; then
         echo "<> Reset voltage offset"
@@ -184,14 +224,38 @@ while true; do
     if [[ $BATTERY_STATUS == *"Battery Power"* ]]; then
         if [ $PLUG_IN == "true" ]; then
             PLUG_IN="false"
+            echo "true" >"/Users/Shared/.smartcpu/battery"
             PROFILE=BATTERY_PROFILE
             select_profile
+        else
+            if [ $(($BATTERY_LEVEL)) -le $(($BATTERY_LOW_PERCENT)) ] && [ $PROFILE -ne $BATTERY_LOW_PROFILES ]; then
+                echo "<!> Low battery detected"
+                PROFILE=0
+                select_profile
+            fi
+            if [ $(($BATTERY_LEVEL)) -le $(($ALERT_PERCENT)) ] && [ "$AUTO_SHUT" -eq 1 ]; then
+                if [ $LOW_TICK -eq $(($MAX_TICK_SHUTDOWN)) ]; then
+                    echo "<!> Shutting down..."
+                    shut_down
+                else
+                    if [ $(expr $LOW_TICK % 10) -eq 0 ];then
+                        TIME_LEFT=$(expr $(expr $(($MAX_TICK_SHUTDOWN)) - $LOW_TICK) \* 2)
+                        echo "<!> Battery critical! Shutting down in $TIME_LEFT second."
+                        notification_force "Battery critical!" "Your computer will shutdown in $TIME_LEFT second. Please connect your power adapter!"
+                    fi
+                    LOW_TICK=$((LOW_TICK + 1))
+                fi
+            fi
         fi
     else
         if [ $PLUG_IN == "false" ]; then
             PLUG_IN="true"
+            echo "false" >"/Users/Shared/.smartcpu/battery"
             PROFILE=PLUGIN_PROFILE
             select_profile
+            if [ $LOW_TICK -ne 0 ];then
+                LOW_TICK=$((0))
+            fi
         fi
     fi
     TEMP_PROFILE="$(cat /Users/Shared/.smartcpu/profile)"
