@@ -40,6 +40,12 @@
 + Add more profile
 + Add select profile through Bitbar
 
+# Requirement
++ This program supports macOS 10.12 or above, however you need to switch off the SIP for unsigned kext in Recovery mode
+```bash
+csrutil enable --without kext
+```
++ For hackintosher can change `CsrActiveConfig` or `csr-active-config` to `0x67` to disable SIP
 # Installation
     + Pull source code
     + Changing your cpu's value at auto.sh file
