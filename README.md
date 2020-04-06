@@ -60,13 +60,13 @@
 # Installation
 
 - Pull source code
-- Changing your cpu's value at config.sh file
-- Testing it by using command "bash auto.sh"
+- Changing your cpu's value at `config.sh` file
+- Testing it by using command `bash try.sh`
 - Hard work for about 30min for checking stable state
-- When it stable run "bash install.sh" to make it run at boot
-- Install Bitbar at https://github.com/matryer/bitbar
-- Select `plugin` as bitbar's plugin folder or copy all file in plugin to bitbar's plugin folder
-- To remove, use "bash uninstall.sh".
+- When it stable run `bash install.sh` to make it run at boot
+- Install `Bitbar` at https://github.com/matryer/bitbar
+- Select `plugin` as Bitbar's plugin folder or copy all file in plugin to bitbar's plugin folder
+- To remove, use `bash uninstall.sh`.
 
 # Example `config.sh` for my 9300H Dell Ins 7591
 

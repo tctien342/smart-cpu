@@ -1,3 +1,4 @@
 .DS_Store
 .history
 test.sh
+src/config.sh

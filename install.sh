@@ -32,17 +32,17 @@ echo "" >/Users/Shared/.smartcpu/setting
 echo 1 >/Users/Shared/.smartcpu/notification
 echo 1 >/Users/Shared/.smartcpu/auto_shut
 chmod -R 777 /Users/Shared/.smartcpu/*
-sudo cp ./com.saintno.autovoltage.plist /Library/LaunchDaemons/
-sudo cp ./com.saintno.notifier.plist ~/Library/LaunchAgents/
+sudo cp ./src/com.saintno.autovoltage.plist /Library/LaunchDaemons/
+sudo cp ./src/com.saintno.notifier.plist ~/Library/LaunchAgents/
 sudo chown root:wheel /Library/LaunchDaemons/com.saintno.autovoltage.plist
 sudo chown root:wheel ~/Library/LaunchAgents/com.saintno.notifier.plist
 sudo mkdir -p /Library/Application\ Support/VoltageShift/
-sudo cp -R ./VoltageShift.kext /Library/Application\ Support/VoltageShift/
-sudo cp ./voltageshift /Library/Application\ Support/VoltageShift/
-sudo cp ./auto.sh /Library/Application\ Support/VoltageShift/
+sudo cp -R ./src/VoltageShift.kext /Library/Application\ Support/VoltageShift/
+sudo cp ./src/voltageshift /Library/Application\ Support/VoltageShift/
+sudo cp ./src/auto.sh /Library/Application\ Support/VoltageShift/
 sudo cp ./config.sh /Library/Application\ Support/VoltageShift/
-sudo cp ./notifier.sh /Library/Application\ Support/VoltageShift/
-sudo cp ./cprofile.sh /usr/local/bin/cprofile
+sudo cp ./src/notifier.sh /Library/Application\ Support/VoltageShift/
+sudo cp ./src/cprofile.sh /usr/local/bin/cprofile
 sudo chown -R root:wheel /Library/Application\ Support/VoltageShift/VoltageShift.kext
 sudo chown root:wheel /Library/Application\ Support/VoltageShift/voltageshift
 sudo chown root:wheel /Library/Application\ Support/VoltageShift/auto.sh
