@@ -20,6 +20,13 @@
     + 3 Profile on plug-in mode
 
 # Changelog
+## Ver 2.3
++ Optimize code, do not change value on sleeping
++ Allow auto shutdown when low battery on sleeping
++ Config now store on config.sh file
++ Add voltage status to plugin
++ Add CPU cache offset
+
 ## Ver 2.0
 + Add auto change profile on low battery
 + Add auto shutdown on critical battery
@@ -40,12 +47,6 @@
 + Add more profile
 + Add select profile through Bitbar
 
-# Requirement
-+ This program supports macOS 10.12 or above, however you need to switch off the SIP for unsigned kext in Recovery mode
-```bash
-csrutil enable --without kext
-```
-+ For hackintosher can change `CsrActiveConfig` or `csr-active-config` to `0x67` to disable SIP
 # Installation
     + Pull source code
     + Changing your cpu's value at auto.sh file

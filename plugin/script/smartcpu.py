@@ -35,20 +35,28 @@ with open("/Users/Shared/.smartcpu/config", "r") as input:
         config.append(line)
         
 # Getting current config
-with open("/Users/Shared/.smartcpu/notification", "r") as input:
-    lines = input.readlines()
-    if lines[0].rstrip() == "1":
-        notification = True
-    else:
-        notification = False
+try:
+    with open("/Users/Shared/.smartcpu/notification", "r") as input:
+        lines = input.readlines()
+        if lines[0].rstrip() == "1":
+            notification = True
+        else:
+            notification = False
+except IOError:
+    print(":warning: Please install script to use plugin! | color=#ff0000")
+    print("---")
+    notification = False
 
 # Getting auto shut down conf
-with open("/Users/Shared/.smartcpu/auto_shut", "r") as input:
-    lines = input.readlines()
-    if lines[0].rstrip() == "1":
-        auto_shut = True
-    else:
-        auto_shut = False
+try:
+    with open("/Users/Shared/.smartcpu/auto_shut", "r") as input:
+        lines = input.readlines()
+        if lines[0].rstrip() == "1":
+            auto_shut = True
+        else:
+            auto_shut = False
+except IOError:
+    auto_shut = False
     
 # Getting current setting
 with open("/Users/Shared/.smartcpu/setting", "r") as input:
@@ -70,14 +78,18 @@ with open("/Users/Shared/.smartcpu/battery", "r") as input:
         battery = False
 
 # Print current config
+print("Power management info")
 print("POWER LONG \t", str(config[0]).rstrip(), "W | color=#ff0000")
 print("POWER SHORT \t", str(config[1]).rstrip(), "W | color=#ff0000")
-
 if int(config[2]) == 1:
     print("TURBO BOOST \t ENABLED | color=#ffff00")
 else:
-    print("TURBOBOOST \t DISABLED | color=#ffff00")
-
+    print("TURBO BOOST \t DISABLED | color=#ffff00")
+print("---")
+print("Voltage offset info")
+print("CPU VOLTAGE \t", str(setting[5]["S"]).rstrip(), "mv | color=#ff0000")
+print("CPU CACHE   \t", str(setting[5]["T"]).rstrip(), "mv | color=#00ff00")
+print("GPU VOLTAGE \t", str(setting[5]["L"]).rstrip(), "mv | color=#0000ff")
 # Print select profile
 print("---")
 print("Select power profile")

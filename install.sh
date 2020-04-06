@@ -1,7 +1,7 @@
 #! /bin/bash
 #Clean
 sudo echo "------------------------------------"
-echo "Smart CPU version 1.6"
+echo "Smart CPU version 2.3"
 echo "Script written by saintno@hackintoshvn"
 echo "Begin cleaning..."
 TMP="$(sudo launchctl unload -w ~/Library/LaunchAgents/com.saintno.autovoltage.plist &>/dev/null)"
@@ -40,14 +40,17 @@ sudo mkdir -p /Library/Application\ Support/VoltageShift/
 sudo cp -R ./VoltageShift.kext /Library/Application\ Support/VoltageShift/
 sudo cp ./voltageshift /Library/Application\ Support/VoltageShift/
 sudo cp ./auto.sh /Library/Application\ Support/VoltageShift/
+sudo cp ./config.sh /Library/Application\ Support/VoltageShift/
 sudo cp ./notifier.sh /Library/Application\ Support/VoltageShift/
 sudo cp ./cprofile.sh /usr/local/bin/cprofile
 sudo chown -R root:wheel /Library/Application\ Support/VoltageShift/VoltageShift.kext
 sudo chown root:wheel /Library/Application\ Support/VoltageShift/voltageshift
 sudo chown root:wheel /Library/Application\ Support/VoltageShift/auto.sh
+sudo chown root:wheel /Library/Application\ Support/VoltageShift/config.sh
 sudo chown root:wheel /Library/Application\ Support/VoltageShift/notifier.sh
 sudo chown root:wheel /usr/local/bin/cprofile
 sudo chmod 777 /Library/Application\ Support/VoltageShift/auto.sh
+sudo chmod 777 /Library/Application\ Support/VoltageShift/config.sh
 sudo chmod 777 /Library/Application\ Support/VoltageShift/voltageshift
 sudo chmod 777 /Library/Application\ Support/VoltageShift/notifier.sh
 sudo chmod 755 /usr/local/bin/cprofile

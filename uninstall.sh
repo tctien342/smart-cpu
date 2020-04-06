@@ -7,4 +7,5 @@ sudo rm -f /Library/LaunchDaemons/com.saintno.autovoltage.plist
 sudo rm -f ~/Library/LaunchAgents/com.saintno.notifier.plist
 sudo rm -r -f /Library/Application\ Support/VoltageShift
 sudo rm -f /usr/local/bin/cprofile
+sudo rm -rf /Users/Shared/.smartcpu
 echo "<> Uninstall success"
