@@ -41,6 +41,7 @@ declare -i PROFILE=0             # Init profile position
 declare -i LOW_TICK=0            # Tick before shutdown the computer
 declare -i ALERT_PERCENT=5       # Battery percent before shut down system
 declare -i TIME_INTERVAL_TRACK=2 # Time will check battery status again
+TIME_WAIT_AFTER_SLEEP=5          # Wait 5s before re apply value to cpu after sleep
 MAX_PROFILE=5                    # Max profile have
 MAX_TICK_SET_VOLT_AGAIN=900      # About 30min = 900*2 second
 MAX_TICK_SHUTDOWN=30             # About 1min = 30*2 second
@@ -242,9 +243,12 @@ fi
 while true; do
     # Re switch profile after wake
     SLEEP_VALUE=$(get_sleep_status)
-    if [ $(($get_sleep_status)) -ne $(($SLEEP_STATUS)) ]; then
+    if [ $(($SLEEP_VALUE)) -ne $(($SLEEP_STATUS)) ]; then
         SLEEP_STATUS=$(($SLEEP_VALUE))
+        echo "<i> Sleep status changed"
         if [ $(($SLEEP_VALUE)) -eq $((0)) ]; then
+            echo "<i> Wake detected"
+            sleep $TIME_WAIT_AFTER_SLEEP
             select_profile
         fi
     fi
