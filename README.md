@@ -1,61 +1,32 @@
 # SmartCPU
 
-> MacOSX Power Management Script
+MacOS Power Management Script
 
-- Auto change power usage of cpu
+> Auto change power usage of cpu base on your battery status
+
+## Importants
+
 - This script may cause panic, dead cpu due to your config.
 - In care your system is not stable, please run uninstall and reboot then find an better config.
 
-# Info
+# Features
 
-- Ver 2.3
-- Init auto script for plug-in adapter and battery mode
-- This script will control your cpu power such as:
+- Auto switch profiles when plug-in/out adapter
+- Auto switch profile on low battery (default 20%)
+- Auto shutdown on critical battery (default 5%)
+- UI base on [Bitbar app](https://github.com/matryer/bitbar)
+- This script will control your cpu values such as:
   - Long term power
   - Short term power
-  - Turbo
-  - Undervolt
-- Auto switch profile on low battery
-- Auto shutdown on critical battery
-- Base on VoltageShift kext by @sicreative
-    - You can read more info at here: https://github.com/sicreative/VoltageShift
-- Add 5 profile to be selected
-    - 2 Profile working on battery mode
-    - 3 Profile on plug-in mode
+  - Turbo enabled
+  - Undervolt values
+- Included 5 Profiles for config file
+  - 2 Profile on battery mode
+  - 3 Profile on plug-in mode
+- Base on VoltageShift kext by [@sicreative](https://github.com/sicreative/VoltageShift)
+- Notification when profiles changed
 
-# Changelog
-
-## Ver 2.3
-
-- Optimize code, do not change value on sleeping
-- Allow auto shutdown when low battery on sleeping
-- Config now store on config.sh file
-- Add voltage status to plugin
-- Add CPU cache offset
-
-![Alt text](menu.png)
-
-## Ver 2.0
-
-- Add auto change profile on low battery
-- Add auto shutdown on critical battery
-- Toggle on/off notification
-- Toggle on/off auto shutdown
-- Redesign bitbar plugin
-
-## Ver 1.6
-
-- Fix auto load value on reboot
-
-## Ver 1.6
-
-- Fix auto load value on reboot
-
-## Ver 1.5
-
-- Fix value not applied
-- Add more profile
-- Add select profile through Bitbar
+![Bitbar's plugin](./menu.png)
 
 # Installation
 
@@ -68,7 +39,7 @@
 - Select `plugin` as Bitbar's plugin folder or copy all file in plugin to bitbar's plugin folder
 - To remove, use `bash uninstall.sh`.
 
-# Example `config.sh` for my 9300H Dell Ins 7591
+### Example `config.sh` for my 9300H Dell Ins 7591
 
 ```bash
 ######### BEGIN OF YOUR CONFIG #########
